@@ -7,6 +7,7 @@ const getos = require('getos')
 const os2 = require('os');
 const cors = require('cors');
 const configFile = 'configuration.json';
+const checkDiskSpace = require('check-disk-space')
 
 module.exports = class Server{
     static server = express();
@@ -33,7 +34,8 @@ module.exports = class Server{
             res.setHeader('Content-Type', 'application/json');
             os.cpuUsage((cpuUsage) => {
                 os.cpuFree((cpuFree) => {
-                    getos((e,osData) => {
+                    getos(async (e,osData) => {
+                        let diskSpace = await checkDiskSpace('/');
                         let totalMem = os.totalmem();
                         let freeMem = os.freemem();
                         res.send(JSON.stringify({
@@ -45,10 +47,12 @@ module.exports = class Server{
                             totalMem: totalMem,
                             freemem: freeMem,
                             freememPercentage: os.freememPercentage(),
-                            freeMemPercents:  ((totalMem - freeMem) * 100).toFixed(0),
+                            memUsagePercents:  ((totalMem - freeMem) / 100).toFixed(0),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
+                            diskSpace: diskSpace,
+                            diskSpacePercent: ((100 * diskSpace.free) / diskSpace.size).toFixed(0),
                         }))
                     })
                 })
