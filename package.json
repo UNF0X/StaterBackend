@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "babel": "^6.23.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "getos": "^3.2.1",
+    "ngrok": "^3.2.7",
+    "os-utils": "^0.0.14",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
