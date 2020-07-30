@@ -34,16 +34,18 @@ module.exports = class Server{
             os.cpuUsage((cpuUsage) => {
                 os.cpuFree((cpuFree) => {
                     getos((e,osData) => {
+                        let totalMem = os.totalmem();
+                        let freeMem = os.freemem();
                         res.send(JSON.stringify({
                             platform: os.platform(),
                             cpuUsage: cpuUsage,
                             cpuUsagePercents:  (cpuUsage * 100).toFixed(0),
                             cpuCount: os.cpuCount(),
                             cpuFree: cpuFree,
-                            totalMem: os.totalmem(),
-                            freemem: os.freemem(),
+                            totalMem: totalMem,
+                            freemem: freeMem,
                             freememPercentage: os.freememPercentage(),
-                            freeMemPercents:  (os.freememPercentage() * 100).toFixed(0),
+                            freeMemPercents:  ((totalMem - freeMem) * 100).toFixed(0),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
