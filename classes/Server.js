@@ -37,11 +37,13 @@ module.exports = class Server{
                         res.send(JSON.stringify({
                             platform: os.platform(),
                             cpuUsage: cpuUsage,
+                            cpuUsagePercents:  (cpuUsage * 100).toFixed(0),
                             cpuCount: os.cpuCount(),
                             cpuFree: cpuFree,
                             totalMem: os.totalmem(),
                             freemem: os.freemem(),
                             freememPercentage: os.freememPercentage(),
+                            freeMemPercents:  (os.freememPercentage() * 100).toFixed(0),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
