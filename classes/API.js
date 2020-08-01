@@ -1,7 +1,7 @@
 const querystring = require("querystring");
 const fetch = new require("node-fetch");
 
-const REQUEST_URL = 'http://localhost:5000';
+const REQUEST_URL = 'https://2dc432d2da3e.eu.ngrok.io';
 
 module.exports = new (class API {
 
