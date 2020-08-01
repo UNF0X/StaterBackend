@@ -4,8 +4,10 @@
     "check-disk-space": "^2.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "fetch": "^1.1.0",
     "getos": "^3.2.1",
     "ngrok": "^3.2.7",
+    "node-fetch": "^2.6.0",
     "os-utils": "^0.0.14",
     "qrcode-terminal": "^0.12.0"
   }

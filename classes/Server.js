@@ -5,6 +5,7 @@ const express = require('express');
 const os = require("os-utils");
 const getos = require('getos')
 const os2 = require('os');
+const API = require('./API')
 const cors = require('cors');
 const configFile = 'configuration.json';
 const checkDiskSpace = require('check-disk-space')
@@ -12,11 +13,23 @@ const checkDiskSpace = require('check-disk-space')
 module.exports = class Server{
     static server = express();
     static connection;
+    static serverURL;
     static configurationData;
 
     static createQR = (port, secretKey) => {
         ngrok.connect(port).then((url) => {
+            if(this.configurationData['vk_user_id']){
+                console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
+                API.request('updateURL', {
+                    secretKey: this.configurationData['secretKey'],
+                    vk_user_id: this.configurationData['vk_user_id'],
+                    url: url
+                }).then(data => {
+                    console.log('[INFO]: URL успешно обновлен.');
+                })
+            }
             console.log(url);
+            this.serverURL = url;
             qrcode.generate(JSON.stringify({
                 serverUrl: url,
                 secretKey: secretKey
@@ -35,6 +48,20 @@ module.exports = class Server{
             os.cpuUsage((cpuUsage) => {
                 os.cpuFree((cpuFree) => {
                     getos(async (e,osData) => {
+
+                        if(req.query.vk_user_id && !this.configurationData['vk_user_id']){
+                            this.configurationData['vk_user_id']=req.query.vk_user_id;
+                            fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
+                            console.log('[INFO]: К серверу привязан пользователь '+req.query.vk_user_id);
+                            API.request('addServer', {
+                                vk_user_id: req.query.vk_user_id,
+                                os: JSON.stringify(osData),
+                                title: 'Server',
+                                secretKey: this.configurationData['secretKey'],
+                                url: this.serverURL
+                            });
+                        }
+
                         let diskSpace = await checkDiskSpace('/');
                         let totalMem = os.totalmem();
                         let freeMem = os.freemem();
@@ -52,7 +79,7 @@ module.exports = class Server{
                             systemUptime: os.sysUptime(),
                             os: osData,
                             diskSpace: diskSpace,
-                            diskSpacePercent: ((100 * diskSpace.free) / diskSpace.size).toFixed(0),
+                            diskSpacePercent: ((100 / diskSpace.size) * diskSpace.free).toFixed(0),
                         }))
                     })
                 })
@@ -66,11 +93,11 @@ module.exports = class Server{
             this.configurationData = JSON.parse(fs.readFileSync(configFile).toString());
         }else{
             this.configurationData = {
-              secretKey:  Math.random().toString(36).substring(2, 15)
+              secretKey: Math.random().toString(36).substring(2, 15)
             };
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
         }
-        console.log("[Stater]: Запуск сервера")
+        console.log("[Stater]: Запуск сервера");
         this.connection = this.server.listen(() => {
             let port = this.connection.address().port;
             this.createQR(port, this.configurationData.secretKey);
