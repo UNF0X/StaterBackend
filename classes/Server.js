@@ -9,6 +9,7 @@ const API = require('./API')
 const cors = require('cors');
 const configFile = 'configuration.json';
 const checkDiskSpace = require('check-disk-space')
+const {argv} = require('yargs');
 
 module.exports = class Server{
     static server = express();
@@ -98,10 +99,16 @@ module.exports = class Server{
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
         }
         console.log("[Stater]: Запуск сервера");
-
-        this.connection = this.server.listen(() => {
-            let port = this.connection.address().port;
-            this.createQR(port, this.configurationData.secretKey);
-        })
+        if(argv.port){
+            this.connection = this.server.listen(argv.port,() => {
+                let port = this.connection.address().port;
+                this.createQR(port, this.configurationData.secretKey);
+            })
+        }else{
+            this.connection = this.server.listen(() => {
+                let port = this.connection.address().port;
+                this.createQR(port, this.configurationData.secretKey);
+            })
+        }
     }
 }
