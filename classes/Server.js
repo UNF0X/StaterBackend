@@ -98,6 +98,7 @@ module.exports = class Server{
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
         }
         console.log("[Stater]: Запуск сервера");
+
         this.connection = this.server.listen(() => {
             let port = this.connection.address().port;
             this.createQR(port, this.configurationData.secretKey);
