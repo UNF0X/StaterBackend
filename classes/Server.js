@@ -87,7 +87,6 @@ module.exports = class Server{
                         let diskSpace = await checkDiskSpace(isWin ? 'C:/' : '/');
                         let totalMem = os.totalmem();
                         let freeMem = os2.freemem();
-                        console.log(100 - ((totalMem - ((freeMem/1024)/1024))/100));
                         res.send(JSON.stringify({
                             platform: os.platform(),
                             cpuUsage: cpuUsage,
@@ -97,7 +96,6 @@ module.exports = class Server{
                             totalMem: totalMem,
                             freemem: freeMem,
                             freememPercentage: os.freememPercentage(),
-
                             memUsagePercents: ((1-os.freememPercentage())*100).toFixed(0),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
