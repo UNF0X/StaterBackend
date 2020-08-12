@@ -97,7 +97,8 @@ module.exports = class Server{
                             totalMem: totalMem,
                             freemem: freeMem,
                             freememPercentage: os.freememPercentage(),
-                            memUsagePercents: (100 - ((totalMem - ((freeMem/1024)/1024))/100).toFixed(0)),
+
+                            memUsagePercents: (100 - ((totalMem - ((freeMem/1024)/1024))/100)).toFixed(0),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
