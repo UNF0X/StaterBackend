@@ -10,6 +10,8 @@ const cors = require('cors');
 const configFile = 'configuration.json';
 const checkDiskSpace = require('check-disk-space')
 const {argv} = require('yargs');
+const sqlite = require('sqlite');
+const isWin = process.platform === "win32";
 
 module.exports = class Server{
     static server = express();
@@ -63,7 +65,7 @@ module.exports = class Server{
                             });
                         }
 
-                        let diskSpace = await checkDiskSpace('/');
+                        let diskSpace = await checkDiskSpace(isWin ? 'C:/' : '/');
                         let totalMem = os.totalmem();
                         let freeMem = os.freemem();
                         res.send(JSON.stringify({
