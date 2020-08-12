@@ -43,7 +43,26 @@ module.exports = class Server{
         });
     }
 
+
     static init = () => {
+
+      /*  var free_memory = os2.freemem();
+        var free_mem_in_kb = free_memory/1024;
+        var free_mem_in_mb = free_mem_in_kb/1024;
+        var free_mem_in_gb = free_mem_in_mb/1024;
+
+        free_mem_in_kb = Math.floor(free_mem_in_kb);
+        free_mem_in_mb = Math.floor(free_mem_in_mb);
+        free_mem_in_gb = Math.floor(free_mem_in_gb);
+
+        free_mem_in_mb = free_mem_in_mb%1024;
+        free_mem_in_kb = free_mem_in_kb%1024;
+        free_memory = free_memory%1024;
+
+        console.log("Free memory: " + free_mem_in_gb + "GB "
+            + free_mem_in_mb + "MB " + free_mem_in_kb
+            + "KB and " + free_memory + "Bytes");*/
+
         this.server.use(cors());
         console.log("[Stater]: Инициализация...")
         this.server.get('/getLoad', (req, res) => {
@@ -67,7 +86,8 @@ module.exports = class Server{
 
                         let diskSpace = await checkDiskSpace(isWin ? 'C:/' : '/');
                         let totalMem = os.totalmem();
-                        let freeMem = os.freemem();
+                        let freeMem = os2.freemem();
+                        console.log(freeMem/1024);
                         res.send(JSON.stringify({
                             platform: os.platform(),
                             cpuUsage: cpuUsage,
@@ -77,7 +97,7 @@ module.exports = class Server{
                             totalMem: totalMem,
                             freemem: freeMem,
                             freememPercentage: os.freememPercentage(),
-                            memUsagePercents:  freeMem.toFixed(0),
+                            memUsagePercents: (100 - ((totalMem - ((freeMem/1024)/1024))/100).toFixed(0)),
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
