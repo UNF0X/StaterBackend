@@ -12,14 +12,7 @@ const checkDiskSpace = require('check-disk-space')
 const {argv} = require('yargs');
 const sqlite = require('sqlite');
 const isWin = process.platform === "win32";
-
-
 const psList = require('ps-list');
-
-(async () => {
-    console.log(await psList());
-    //=> [{pid: 3213, name: 'node', cmd: 'node test.js', ppid: 1, uid: 501, cpu: 0.1, memory: 1.5}, …]
-})();
 
 module.exports = class Server{
     static server = express();
@@ -53,24 +46,6 @@ module.exports = class Server{
 
 
     static init = () => {
-
-      /*  var free_memory = os2.freemem();
-        var free_mem_in_kb = free_memory/1024;
-        var free_mem_in_mb = free_mem_in_kb/1024;
-        var free_mem_in_gb = free_mem_in_mb/1024;
-
-        free_mem_in_kb = Math.floor(free_mem_in_kb);
-        free_mem_in_mb = Math.floor(free_mem_in_mb);
-        free_mem_in_gb = Math.floor(free_mem_in_gb);
-
-        free_mem_in_mb = free_mem_in_mb%1024;
-        free_mem_in_kb = free_mem_in_kb%1024;
-        free_memory = free_memory%1024;
-
-        console.log("Free memory: " + free_mem_in_gb + "GB "
-            + free_mem_in_mb + "MB " + free_mem_in_kb
-            + "KB and " + free_memory + "Bytes");*/
-
         this.server.use(cors());
         console.log("[Stater]: Инициализация...")
         this.server.get('/getLoad', (req, res) => {
@@ -110,6 +85,7 @@ module.exports = class Server{
                             os: osData,
                             diskSpace: diskSpace,
                             diskSpacePercent: ((100 / diskSpace.size) * diskSpace.free).toFixed(0),
+                            processes: await psList()
                         }))
                     })
                 })
