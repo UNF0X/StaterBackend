@@ -13,14 +13,6 @@ const {argv} = require('yargs');
 const sqlite = require('sqlite');
 const isWin = process.platform === "win32";
 const psList = require('ps-list');
-const publicIp = require('public-ip')
-
-publicIp.v4().then(ip => {
-    console.log("your public ip address", ip);
-});
-
-
-
 
 module.exports = class Server{
     static server = express();
@@ -29,29 +21,28 @@ module.exports = class Server{
     static configurationData;
 
     static createQR = async (port, secretKey) => {
-            return;
-        //let url = tunnel.url;
-        // ngrok.connect(port).then((url) => {
-        if (this.configurationData['vk_user_id']) {
-            console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
-            API.request('updateURL', {
-                secretKey: this.configurationData['secretKey'],
-                vk_user_id: this.configurationData['vk_user_id'],
-                url: url
-            }).then(data => {
-                console.log('[INFO]: URL успешно обновлен.');
-            })
-        }
-        console.log(url);
-        this.serverURL = url;
-        qrcode.generate(JSON.stringify({
-            serverUrl: url,
-            secretKey: secretKey
-        }), function (qrcode) {
-            console.log(qrcode);
-            console.log("[Stater]: Отсканируйте этот QR-код из сервиса для привязки!")
+
+        ngrok.connect(port).then((url) => {
+            if (this.configurationData['vk_user_id']) {
+                console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
+                API.request('updateURL', {
+                    secretKey: this.configurationData['secretKey'],
+                    vk_user_id: this.configurationData['vk_user_id'],
+                    url: url
+                }).then(data => {
+                    console.log('[INFO]: URL успешно обновлен.');
+                })
+            }
+            console.log(url);
+            this.serverURL = url;
+            qrcode.generate(JSON.stringify({
+                serverUrl: url,
+                secretKey: secretKey
+            }), function (qrcode) {
+                console.log(qrcode);
+                console.log("[Stater]: Отсканируйте этот QR-код из сервиса для привязки!")
+            });
         });
-        // });
     }
 
 
