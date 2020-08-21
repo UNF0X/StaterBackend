@@ -13,6 +13,11 @@ const {argv} = require('yargs');
 const sqlite = require('sqlite');
 const isWin = process.platform === "win32";
 const psList = require('ps-list');
+const publicIp = require('public-ip')
+
+publicIp.v4().then(ip => {
+    console.log("your public ip address", ip);
+});
 
 module.exports = class Server{
     static server = express();
