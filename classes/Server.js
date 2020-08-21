@@ -52,7 +52,7 @@ module.exports = class Server{
             await ngrok.disconnect();
             await ngrok.kill();
             Server.createQR(this.port, this.configurationData.secretKey)
-        }, (3600*2));
+        }, ((3600*2)*1000));
         this.server.use(cors());
         console.log("[Stater]: Инициализация...")
         this.server.get('/getLoad', (req, res) => {
