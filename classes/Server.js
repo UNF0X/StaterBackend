@@ -12,7 +12,7 @@ const checkDiskSpace = require('check-disk-space')
 const {argv} = require('yargs');
 const sqlite = require('sqlite');
 const isWin = process.platform === "win32";
-
+const psList = require('ps-list');
 
 module.exports = class Server{
     static server = express();
