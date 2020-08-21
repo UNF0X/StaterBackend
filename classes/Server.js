@@ -26,8 +26,11 @@ module.exports = class Server{
     static configurationData;
 
     static createQR = (port, secretKey) => {
-        ngrok.connect(port).then((url) => {
-            if(this.configurationData['vk_user_id']){
+
+        publicIp.v4().then(ip => {
+            let url = 'http://'+ip;
+            // ngrok.connect(port).then((url) => {
+            if (this.configurationData['vk_user_id']) {
                 console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
                 API.request('updateURL', {
                     secretKey: this.configurationData['secretKey'],
@@ -46,6 +49,7 @@ module.exports = class Server{
                 console.log(qrcode);
                 console.log("[Stater]: Отсканируйте этот QR-код из сервиса для привязки!")
             });
+            // });
         });
     }
 
