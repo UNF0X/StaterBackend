@@ -12,12 +12,13 @@ const checkDiskSpace = require('check-disk-space')
 const {argv} = require('yargs');
 const sqlite = require('sqlite');
 const isWin = process.platform === "win32";
-const psList = require('ps-list');
+
 
 module.exports = class Server{
     static server = express();
     static connection;
     static serverURL;
+    static port;
     static configurationData;
 
     static createQR = async (port, secretKey) => {
@@ -47,6 +48,11 @@ module.exports = class Server{
 
 
     static init = () => {
+        setInterval(async () => {
+            await ngrok.disconnect();
+            await ngrok.kill();
+            Server.createQR(this.port, this.configurationData.secretKey)
+        }, (3600*2));
         this.server.use(cors());
         console.log("[Stater]: Инициализация...")
         this.server.get('/getLoad', (req, res) => {
@@ -107,13 +113,13 @@ module.exports = class Server{
         console.log("[Stater]: Запуск сервера");
         if(argv.port){
             this.connection = this.server.listen(argv.port,() => {
-                let port = this.connection.address().port;
-                this.createQR(port, this.configurationData.secretKey);
+                this.port = this.connection.address().port;
+                this.createQR(this.port, this.configurationData.secretKey);
             })
         }else{
             this.connection = this.server.listen(() => {
-                let port = this.connection.address().port;
-                this.createQR(port, this.configurationData.secretKey);
+                this.port = this.connection.address().port;
+                this.createQR(this.port, this.configurationData.secretKey);
             })
         }
     }
