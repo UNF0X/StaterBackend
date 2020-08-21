@@ -28,7 +28,7 @@ module.exports = class Server{
     static createQR = (port, secretKey) => {
 
         publicIp.v4().then(ip => {
-            let url = 'http://'+ip;
+            let url = 'http://'+ip+':'+port;
             // ngrok.connect(port).then((url) => {
             if (this.configurationData['vk_user_id']) {
                 console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
