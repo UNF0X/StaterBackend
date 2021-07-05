@@ -63,12 +63,12 @@ module.exports = class Server{
                         // console.log('[INFO]: К серверу привязан пользователь ' + req.query.vk_user_id);
                         API.request('addServer', {
                             os: JSON.stringify(osData),
-                            title: 'Server',
+                            title: os2.hostname(),
                             secretKey: this.configurationData['secretKey'],
                             url: this.serverURL
                         });
 
-                        console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»')
+                        console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
                         console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
                         resolve(true)
                         //   }
@@ -99,7 +99,7 @@ module.exports = class Server{
                             API.request('addServer', {
                                 vk_user_id: req.query.vk_user_id,
                                 os: JSON.stringify(osData),
-                                title: 'Server',
+                                title: os2.hostname(),
                                 secretKey: this.configurationData['secretKey'],
                                 url: this.serverURL
                             });
