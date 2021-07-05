@@ -24,11 +24,11 @@ module.exports = class Server{
     static createQR = async (port, secretKey, newServer) => {
         return new Promise((resolve, reject) => {
             ngrok.connect(port).then((url) => {
-                /*  if (this.configurationData['vk_user_id']) {*/
+                /*  if (this.configurationData['user_id']) {*/
                 !newServer && console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
                 API.request('updateURL', {
                     secretKey: this.configurationData['secretKey'],
-                    vk_user_id: this.configurationData['vk_user_id'],
+                    user_id: this.configurationData['user_id'],
                     url: url
                 }).then(data => {
                     !newServer && console.log('[INFO]: URL успешно обновлен.');
@@ -57,15 +57,16 @@ module.exports = class Server{
             os.cpuUsage((cpuUsage) => {
                 os.cpuFree((cpuFree) => {
                     getos(async (e,osData) => {
-                        //   if (req.query.vk_user_id && !this.configurationData['vk_user_id']) {
-                        // this.configurationData['vk_user_id'] = req.query.vk_user_id;
+                        //   if (req.query.user_id && !this.configurationData['user_id']) {
+                        // this.configurationData['user_id'] = req.query.user_id;
                         //fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
-                        // console.log('[INFO]: К серверу привязан пользователь ' + req.query.vk_user_id);
+                        // console.log('[INFO]: К серверу привязан пользователь ' + req.query.user_id);
                         API.request('addServer', {
                             os: JSON.stringify(osData),
                             title: os2.hostname(),
                             secretKey: this.configurationData['secretKey'],
-                            url: this.serverURL
+                            url: this.serverURL,
+                            user_id: process.argv[3]
                         });
 
                         console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
@@ -92,16 +93,16 @@ module.exports = class Server{
                 os.cpuFree((cpuFree) => {
                     getos(async (e,osData) => {
 
-                        if(req.query.vk_user_id && !this.configurationData['vk_user_id']){
-                            this.configurationData['vk_user_id']=req.query.vk_user_id;
+                        if(req.query.user_id && !this.configurationData['user_id']){
+                            this.configurationData['user_id']=req.query.user_id;
                             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
-                            console.log('[INFO]: К серверу привязан пользователь '+req.query.vk_user_id);
+                            console.log('[INFO]: К серверу привязан пользователь '+req.query.user_id);
                             API.request('addServer', {
-                                vk_user_id: req.query.vk_user_id,
+                                user_id: req.query.user_id,
                                 os: JSON.stringify(osData),
                                 title: os2.hostname(),
                                 secretKey: this.configurationData['secretKey'],
-                                url: this.serverURL
+                                url: this.serverURL,
                             });
                         }
 
