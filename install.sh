@@ -1,5 +1,5 @@
 yarn global add pm2
-git clone https://github.com/UNF0X/StaterBackend .
+git clone https://github.com/UNF0X/StaterBackend
 cd StaterBackend && yarn
 pm2 --name Monify start node -- StaterBackend/index.js
 pm2 save
