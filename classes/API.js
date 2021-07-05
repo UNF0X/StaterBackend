@@ -1,7 +1,7 @@
 const querystring = require("querystring");
 const fetch = new require("node-fetch");
 
-const REQUEST_URL = 'http://stater.backend.unf0x.ru';
+const REQUEST_URL = 'http://localhost:5675';
 
 module.exports = new (class API {
 
@@ -16,7 +16,7 @@ module.exports = new (class API {
             };
 
             let url = REQUEST_URL + '/' + apiMethod;
-            console.log(url)
+          //  console.log(url)
 
             if (method === 'POST') {
                 config.body = JSON.stringify(params)

@@ -21,31 +21,62 @@ module.exports = class Server{
     static port;
     static configurationData;
 
-    static createQR = async (port, secretKey) => {
-
-        ngrok.connect(port).then((url) => {
-            if (this.configurationData['vk_user_id']) {
-                console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
+    static createQR = async (port, secretKey, newServer) => {
+        return new Promise((resolve, reject) => {
+            ngrok.connect(port).then((url) => {
+                /*  if (this.configurationData['vk_user_id']) {*/
+                !newServer && console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
                 API.request('updateURL', {
                     secretKey: this.configurationData['secretKey'],
                     vk_user_id: this.configurationData['vk_user_id'],
                     url: url
                 }).then(data => {
-                    console.log('[INFO]: URL успешно обновлен.');
+                    !newServer && console.log('[INFO]: URL успешно обновлен.');
+                    resolve();
+                }).catch(error => {
+                    console.log('[ERROR]: Не удалось обновить URL. Требуется перепривязка');
+                    ngrok.kill();
+                    fs.unlinkSync(configFile);
+                    process.exit(1)
                 })
-            }
-            console.log(url);
-            this.serverURL = url;
-            qrcode.generate(JSON.stringify({
-                serverUrl: url,
-                secretKey: secretKey
-            }), function (qrcode) {
-                console.log(qrcode);
-                console.log("[Stater]: Отсканируйте этот QR-код из сервиса для привязки!")
+                //  }
+                this.serverURL = url;
+                /*qrcode.generate(JSON.stringify({
+                    serverUrl: url,
+                    secretKey: secretKey
+                }), function (qrcode) {
+                    console.log(qrcode);
+                    console.log("[Stater]: Отсканируйте этот QR-код из сервиса для привязки!")`
+                });*/
             });
-        });
+        })
     }
 
+    static addServer = () => {
+        return new Promise((resolve, reject) => {
+            os.cpuUsage((cpuUsage) => {
+                os.cpuFree((cpuFree) => {
+                    getos(async (e,osData) => {
+                        //   if (req.query.vk_user_id && !this.configurationData['vk_user_id']) {
+                        // this.configurationData['vk_user_id'] = req.query.vk_user_id;
+                        //fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
+                        // console.log('[INFO]: К серверу привязан пользователь ' + req.query.vk_user_id);
+                        API.request('addServer', {
+                            os: JSON.stringify(osData),
+                            title: 'Server',
+                            secretKey: this.configurationData['secretKey'],
+                            url: this.serverURL
+                        });
+
+                        console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»')
+                        console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
+                        resolve(true)
+                        //   }
+                    })
+                })
+            })
+        })
+    }
 
     static init = () => {
         setInterval(async () => {
@@ -100,27 +131,30 @@ module.exports = class Server{
         });
     }
 
-    static start = () => {
+    static start = async () => {
+        let newServer = false;
 
-        if(fs.existsSync(configFile)){
+        if (fs.existsSync(configFile)) {
             this.configurationData = JSON.parse(fs.readFileSync(configFile).toString());
-        }else{
+        } else {
             this.configurationData = {
-              secretKey: Math.random().toString(36).substring(2, 15)
+                secretKey: Math.random().toString(36).substring(2, 15)
             };
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
+            newServer = true;
+            await this.addServer();
         }
         console.log("[Stater]: Запуск сервера");
-        if(argv.port){
-            this.connection = this.server.listen(argv.port,() => {
-                this.port = this.connection.address().port;
-                this.createQR(this.port, this.configurationData.secretKey);
-            })
-        }else{
-            this.connection = this.server.listen(() => {
-                this.port = this.connection.address().port;
-                this.createQR(this.port, this.configurationData.secretKey);
-            })
+            if (argv.port) {
+                this.connection = this.server.listen(argv.port, () => {
+                    this.port = this.connection.address().port;
+                    this.createQR(this.port, this.configurationData.secretKey, newServer);
+                })
+            } else {
+                this.connection = this.server.listen(() => {
+                    this.port = this.connection.address().port;
+                    this.createQR(this.port, this.configurationData.secretKey, newServer);
+                })
+            }
         }
-    }
 }
