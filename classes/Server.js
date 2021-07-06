@@ -69,8 +69,9 @@ module.exports = class Server{
                             user_id: process.argv[3]
                         });
 
-                        console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
-                        console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
+                        console.log('Сервер успешно привязан к пользователю: '+process.argv[3]);
+                    //    console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
+                      // console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
                         resolve(true)
                         //   }
                     })
