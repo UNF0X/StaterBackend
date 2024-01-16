@@ -1,20 +1,21 @@
-const ngrok = require('ngrok');
-const qrcode = require("qrcode-terminal");
-const fs = require('fs');
-const express = require('express');
-const os = require("os-utils");
-const getos = require('getos')
-const os2 = require('os');
-const API = require('./API')
-const cors = require('cors');
-const configFile = 'configuration.json';
-const checkDiskSpace = require('check-disk-space')
-const {argv} = require('yargs');
-const sqlite = require('sqlite');
-const isWin = process.platform === "win32";
-const psList = require('ps-list');
 
-module.exports = class Server{
+import qrcode from 'qrcode-terminal';
+import fs from 'fs';
+import express from 'express';
+import os from "os-utils";
+import getos from 'getos';
+import os2 from 'os';
+import API from './API.js';
+import cors from 'cors';
+const configFile = 'configuration.json';
+import checkDiskSpace from 'check-disk-space';
+import argv from 'yargs';
+const isWin = process.platform === "win32";
+import psList from 'ps-list';
+import ngrok from '@ngrok/ngrok';
+
+
+export class Server{
     static server = express();
     static connection;
     static serverURL;
@@ -23,12 +24,16 @@ module.exports = class Server{
 
     static createQR = async (port, secretKey, newServer) => {
         return new Promise((resolve, reject) => {
-            ngrok.connect(port).then((url) => {
+
+            ngrok.forward({ addr: port, authtoken: '1fNsSHQloBiNLwsO3xF24qMSe0O_3VYGN4WMMJG9456ZJHE6X' }).then((listener) => {
+                const url = listener.url();
+                this.serverURL = url;
+                console.log(url);
                 /*  if (this.configurationData['user_id']) {*/
                 !newServer && console.log('[INFO]: Отправка нового URl для доступа к статистике на сервер...');
                 API.request('updateURL', {
                     secretKey: this.configurationData['secretKey'],
-                    user_id: this.configurationData['user_id'],
+                    user_id: this.configurationData['user_id'] || process.argv[2],
                     url: url
                 }).then(data => {
                     !newServer && console.log('[INFO]: URL успешно обновлен.');
@@ -40,7 +45,6 @@ module.exports = class Server{
                     process.exit(1)
                 })
                 //  }
-                this.serverURL = url;
                 /*qrcode.generate(JSON.stringify({
                     serverUrl: url,
                     secretKey: secretKey
@@ -52,7 +56,7 @@ module.exports = class Server{
         })
     }
 
-    static addServer = () => {
+    static addServer = (url) => {
         return new Promise((resolve, reject) => {
             os.cpuUsage((cpuUsage) => {
                 os.cpuFree((cpuFree) => {
@@ -61,15 +65,16 @@ module.exports = class Server{
                         // this.configurationData['user_id'] = req.query.user_id;
                         //fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
                         // console.log('[INFO]: К серверу привязан пользователь ' + req.query.user_id);
+                        console.log(process.argv[2]);
                         API.request('addServer', {
                             os: JSON.stringify(osData),
                             title: os2.hostname(),
                             secretKey: this.configurationData['secretKey'],
-                            url: this.serverURL,
-                            user_id: process.argv[3]
+                            url: url,
+                            user_id: process.argv[2]
                         });
 
-                        console.log('Сервер успешно привязан к пользователю: '+process.argv[3]);
+                        console.log('Сервер успешно привязан к пользователю: '+process.argv[2]);
                     //    console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
                       // console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
                         resolve(true)
@@ -144,7 +149,8 @@ module.exports = class Server{
             };
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
             newServer = true;
-            await this.addServer();
+            const listener = await ngrok.forward({ addr: this.port, authtoken: '1fNsSHQloBiNLwsO3xF24qMSe0O_3VYGN4WMMJG9456ZJHE6X' });
+            await this.addServer(listener.url());
         }
         console.log("[Stater]: Запуск сервера");
             if (argv.port) {

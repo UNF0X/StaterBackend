@@ -1,9 +1,9 @@
-const querystring = require("querystring");
-const fetch = new require("node-fetch");
+import querystring from 'querystring';
+import fetch from "node-fetch";
 
-const REQUEST_URL = 'http://localhost:5675';
+const REQUEST_URL = 'https://chisa.unf0x.ru/monify/bot/';
 
-module.exports = new (class API {
+class API {
 
     bindThis = (variable) => {
         this.This = variable;
@@ -15,14 +15,15 @@ module.exports = new (class API {
                 method: method,
             };
 
-            let url = REQUEST_URL + '/' + apiMethod;
+            let url = REQUEST_URL; /*+ '/' + apiMethod;*/
           //  console.log(url)
-
-            if (method === 'POST') {
+          /*  if (method === 'POST') {
                 config.body = JSON.stringify(params)
             } else {
                 url += '?' + querystring.stringify(params);
-            }
+            }*/
+
+            url += '?method=' + apiMethod + '&' + querystring.stringify(params);
 
             fetch(url, config).then(data => {
                 data.text().then((text) => {
@@ -42,4 +43,6 @@ module.exports = new (class API {
 
         })
     }
-})
+}
+
+export default new API();

@@ -1,19 +1,21 @@
 {
+  "type": "module",
   "dependencies": {
+    "@ngrok/ngrok": "^0.9.1",
     "babel": "^6.23.0",
-    "check-disk-space": "^2.1.0",
+    "check-disk-space": "^3.4.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "fetch": "^1.1.0",
     "getos": "^3.2.1",
-    "localtunnel": "^2.0.0",
-    "ngrok": "^3.2.7",
-    "node-fetch": "^2.6.0",
+    "localtunnel": "^2.0.2",
+    "ngrok": "^5.0.0-beta.2",
+    "node-fetch": "^3.3.2",
     "os-utils": "^0.0.14",
-    "ps-list": "^7.2.0",
-    "public-ip": "^4.0.2",
+    "ps-list": "^8.1.1",
+    "public-ip": "^6.0.1",
     "qrcode-terminal": "^0.12.0",
-    "sqlite": "^4.0.12",
-    "yargs": "^15.4.1"
+    "sqlite": "^5.1.1",
+    "yargs": "^17.7.2"
   }
 }

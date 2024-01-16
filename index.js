@@ -1,7 +1,7 @@
-const Server = require('./classes/Server')
-const ngrok = require('ngrok');
-const os 	= require('os-utils');
-const qrcode = require("qrcode-terminal");
+import {Server} from './classes/Server.js';
+import ngrok from 'ngrok';
+import os from "os-utils";
+import qrcode from 'qrcode-terminal';
 
 //console.log(process.argv);
 Server.init();
