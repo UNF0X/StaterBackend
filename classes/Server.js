@@ -25,7 +25,7 @@ export class Server{
     static createQR = async (port, secretKey, newServer) => {
         return new Promise((resolve, reject) => {
 
-            ngrok.forward({ addr: port, authtoken: '1fNsSHQloBiNLwsO3xF24qMSe0O_3VYGN4WMMJG9456ZJHE6X' }).then((listener) => {
+            ngrok.forward({ addr: port, authtoken: '2b1wDukJgybHSIrVUFZfy115CBO_7Gie3dKvNZARsFbnx7Kj1' }).then((listener) => {
                 const url = listener.url();
                 this.serverURL = url;
                 console.log(url);
@@ -149,7 +149,8 @@ export class Server{
             };
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
             newServer = true;
-            const listener = await ngrok.forward({ addr: this.port, authtoken: '1fNsSHQloBiNLwsO3xF24qMSe0O_3VYGN4WMMJG9456ZJHE6X' });
+
+            const listener = await ngrok.forward({ addr: this.port, authtoken: '2b1wDukJgybHSIrVUFZfy115CBO_7Gie3dKvNZARsFbnx7Kj1' });
             await this.addServer(listener.url());
         }
         console.log("[Stater]: Запуск сервера");
