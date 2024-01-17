@@ -12,7 +12,6 @@ import checkDiskSpace from 'check-disk-space';
 import argv from 'yargs';
 const isWin = process.platform === "win32";
 import psList from 'ps-list';
-import ngrok from '@ngrok/ngrok';
 import {tunnelmole} from "tunnelmole";
 
 
@@ -42,7 +41,6 @@ export class Server{
                     resolve();
                 }).catch(error => {
                     console.log('[ERROR]: Не удалось обновить URL. Требуется перепривязка');
-                    ngrok.kill();
                     fs.unlinkSync(configFile);
                     process.exit(1)
                 })
@@ -67,16 +65,16 @@ export class Server{
                         // this.configurationData['user_id'] = req.query.user_id;
                         //fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
                         // console.log('[INFO]: К серверу привязан пользователь ' + req.query.user_id);
-                        console.log(process.argv[2]);
+                        console.log(process.argv[3]);
                         API.request('addServer', {
                             os: JSON.stringify(osData),
                             title: os2.hostname(),
                             secretKey: this.configurationData['secretKey'],
                             url: url,
-                            user_id: process.argv[2]
+                            user_id: process.argv[3]
                         });
 
-                        console.log('Сервер успешно привязан к пользователю: '+process.argv[2]);
+                        console.log('Сервер успешно привязан к пользователю: '+process.argv[3]);
                     //    console.log('[ВАЖНО]: Для привязки сервера необходимо перейти по ссылке и нажать кнопку «Начать»');
                       // console.log('https://t.me/monify_bot?start='+this.configurationData['secretKey']);
                         resolve(true)
