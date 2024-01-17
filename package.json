@@ -1,7 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "@ngrok/ngrok": "^0.9.1",
     "babel": "^6.23.0",
     "check-disk-space": "^3.4.0",
     "cors": "^2.8.5",
