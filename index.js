@@ -1,5 +1,4 @@
 import {Server} from './classes/Server.js';
-import ngrok from 'ngrok';
 import os from "os-utils";
 import qrcode from 'qrcode-terminal';
 
