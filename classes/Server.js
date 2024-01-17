@@ -13,6 +13,7 @@ import argv from 'yargs';
 const isWin = process.platform === "win32";
 import psList from 'ps-list';
 import ngrok from '@ngrok/ngrok';
+import {tunnelmole} from "tunnelmole";
 
 
 export class Server{
@@ -25,8 +26,9 @@ export class Server{
     static createQR = async (port, secretKey, newServer) => {
         return new Promise((resolve, reject) => {
 
-            ngrok.forward({ addr: port, authtoken: '2b1wDukJgybHSIrVUFZfy115CBO_7Gie3dKvNZARsFbnx7Kj1' }).then((listener) => {
-                const url = listener.url();
+            tunnelmole({
+                port: port
+            }).then(url => {
                 this.serverURL = url;
                 console.log(url);
                 /*  if (this.configurationData['user_id']) {*/
@@ -86,11 +88,13 @@ export class Server{
     }
 
     static init = () => {
-        setInterval(async () => {
+
+
+     /*   setInterval(async () => {
             await ngrok.disconnect();
             await ngrok.kill();
             Server.createQR(this.port, this.configurationData.secretKey)
-        }, ((3600*2)*1000));
+        }, ((3600*2)*1000));*/
         this.server.use(cors());
         console.log("[Stater]: Инициализация...")
         this.server.get('/getLoad', (req, res) => {
@@ -149,9 +153,10 @@ export class Server{
             };
             fs.writeFileSync(configFile, JSON.stringify(this.configurationData));
             newServer = true;
-
-            const listener = await ngrok.forward({ addr: this.port, authtoken: '2b1wDukJgybHSIrVUFZfy115CBO_7Gie3dKvNZARsFbnx7Kj1' });
-            await this.addServer(listener.url());
+            const url = await tunnelmole({
+                port: this.port
+            })
+            await this.addServer(url);
         }
         console.log("[Stater]: Запуск сервера");
             if (argv.port) {
