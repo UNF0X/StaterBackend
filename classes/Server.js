@@ -173,8 +173,10 @@ export class Server{
 
                         let lines = []
                         lineReader.on('line', function (line) {
-                            console.log(line);
-                            return;
+                            lines.push(line);
+                            if (lines.length < 50) {
+                                files[item][file] = lines;
+                            }
                            /* lines.push(line.split(","));
                             if (lines.length >= 50) {
                                 files[item][file] = lines;
