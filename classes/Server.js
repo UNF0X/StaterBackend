@@ -15,6 +15,8 @@ import psList from 'ps-list';
 import {tunnelmole} from "tunnelmole";
 
 
+const VERSION = '1.0.0';
+
 export class Server{
     static server = express();
     static connection;
@@ -130,9 +132,11 @@ export class Server{
                             serverUptime: os.processUptime(),
                             systemUptime: os.sysUptime(),
                             os: osData,
+                            title: os2.hostname(),
                             diskSpace: diskSpace,
                             diskSpacePercent: ((100 / diskSpace.size) * diskSpace.free).toFixed(0),
-                            processes: await psList()
+                            processes: await psList(),
+                            version: VERSION
                         }))
                     })
                 })
