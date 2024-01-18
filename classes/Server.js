@@ -168,7 +168,7 @@ export class Server{
                         files[item][file] = array.slice(-10);*/
 
                         var lineReader = readLine.createInterface({
-                            input: require('fs').createReadStream('/var/log/' + item + '/' + file)
+                            input: fs.createReadStream('/var/log/' + item + '/' + file)
                         });
 
                         let lines = []
