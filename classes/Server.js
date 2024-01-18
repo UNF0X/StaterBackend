@@ -9,6 +9,7 @@ import checkDiskSpace from 'check-disk-space';
 import argv from 'yargs';
 import psList from 'ps-list';
 import {tunnelmole} from "tunnelmole";
+import * as readLine from "readline";
 
 const configFile = 'configuration.json';
 const isWin = process.platform === "win32";
@@ -166,7 +167,7 @@ export class Server{
                        /* const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
                         files[item][file] = array.slice(-10);*/
 
-                        var lineReader = require('readline').createInterface({
+                        var lineReader = readLine.createInterface({
                             input: require('fs').createReadStream('/var/log/' + item + '/' + file)
                         });
 
