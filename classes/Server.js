@@ -162,8 +162,12 @@ export class Server{
                     .map(item => item.name)
                 filesList.forEach(file => {
                     files[item]['file'][file] = [];
-                    const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
-                    files[item][file] = array.slice(-50);
+                    try {
+                        const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
+                        files[item][file] = array.slice(-50);
+                    } catch (e) {
+                        console.log(e)
+                    }
                 });
             })
             res.send(JSON.stringify({
