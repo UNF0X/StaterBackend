@@ -142,6 +142,29 @@ export class Server{
                 })
             });
         });
+
+        function getDirectories(path) {
+            return fs.readdirSync(path).filter(function (file) {
+                return fs.statSync(path+'/'+file).isDirectory();
+            });
+        }
+
+        this.server.get('/getLogs', async (req, res) => {
+            const dirs = getDirectories('/var/log');
+            console.log(dirs)
+            res.setHeader('Content-Type', 'application/json');
+            const files = {};
+            dirs.map(item => {
+                files[item] = [];
+                fs.readdirSync('/var/log/' + item).forEach(file => {
+                    console.log(file);
+                    files[item].push(file);
+                });
+            })
+            res.send(JSON.stringify({
+                files
+            }));
+        });
     }
 
     static start = async () => {
