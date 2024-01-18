@@ -163,8 +163,21 @@ export class Server{
                 filesList.forEach(file => {
                     files[item]['file'][file] = [];
                     try {
-                        const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
-                        files[item][file] = array.slice(-10);
+                       /* const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
+                        files[item][file] = array.slice(-10);*/
+
+                        var lineReader = require('readline').createInterface({
+                            input: require('fs').createReadStream('/var/log/' + item + '/' + file)
+                        });
+
+                        let lines = []
+                        lineReader.on('line', function (line) {
+                            lines.push(line.split(","));
+                            if (lines.length == 50) {
+                                files[item][file] = lines;
+                                lines = []
+                            }
+                        });
                     } catch (e) {
                         console.log(e)
                     }
