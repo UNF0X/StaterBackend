@@ -183,9 +183,11 @@ export class Server{
                         });
                 });
             })
-            res.send(JSON.stringify({
-                files
-            }));
+            setTimeout(() => {
+                res.send(JSON.stringify({
+                    files
+                }));
+            }, 1000)
         });
     }
 
