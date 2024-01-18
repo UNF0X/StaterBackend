@@ -150,18 +150,20 @@ export class Server{
 
         this.server.get('/getLogs', async (req, res) => {
             const dirs = getDirectories('/var/log');
-            console.log(dirs)
+
             res.setHeader('Content-Type', 'application/json');
             const files = {};
             dirs.map(item => {
                 files[item] = {};
                 files[item]['file'] = [];
                 files[item]['strings'] = [];
-                fs.readdirSync('/var/log/' + item).forEach(file => {
-                    console.log(file);
-                    files[item]['file'].push(file);
+                const filesList = fs.readdirSync('/var/log/' + item, {withFileTypes: true})
+                    .filter(item => !item.isDirectory())
+                    .map(item => item.name)
+                filesList.forEach(file => {
+                    files[item]['file'][file] = [];
                     const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
-                    files[item]['strings'] = array.slice(-50);
+                    files[item][file] = array.slice(-50);
                 });
             })
             res.send(JSON.stringify({
