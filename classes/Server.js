@@ -164,7 +164,7 @@ export class Server{
                     files[item]['file'][file] = [];
                     try {
                         const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
-                        files[item][file] = array.slice(-50);
+                        files[item][file] = array.slice(-10);
                     } catch (e) {
                         console.log(e)
                     }
