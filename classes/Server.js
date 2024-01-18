@@ -160,7 +160,7 @@ export class Server{
                     .filter(item => !item.isDirectory())
                     .map(item => item.name)
                 filesList.forEach(file => {
-                    if (file.match('/\.gz$|\.xz$/')) {return;}
+                    if (file.match('/\.gz|\.xz/')) {return;}
                     files[item][file] = [];
                        /* const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
                         files[item][file] = array.slice(-10);*/
