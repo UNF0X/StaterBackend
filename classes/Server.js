@@ -1,5 +1,3 @@
-
-import qrcode from 'qrcode-terminal';
 import fs from 'fs';
 import express from 'express';
 import os from "os-utils";
@@ -7,12 +5,13 @@ import getos from 'getos';
 import os2 from 'os';
 import API from './API.js';
 import cors from 'cors';
-const configFile = 'configuration.json';
 import checkDiskSpace from 'check-disk-space';
 import argv from 'yargs';
-const isWin = process.platform === "win32";
 import psList from 'ps-list';
 import {tunnelmole} from "tunnelmole";
+
+const configFile = 'configuration.json';
+const isWin = process.platform === "win32";
 
 
 const VERSION = '1.0.0';
@@ -158,7 +157,9 @@ export class Server{
                 files[item] = [];
                 fs.readdirSync('/var/log/' + item).forEach(file => {
                     console.log(file);
-                    files[item].push(file);
+                    files[item]['file'].push(file);
+                    const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
+                    files[item]['strings'] = array.slice(-50);
                 });
             })
             res.send(JSON.stringify({
