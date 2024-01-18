@@ -154,7 +154,9 @@ export class Server{
             res.setHeader('Content-Type', 'application/json');
             const files = {};
             dirs.map(item => {
-                files[item] = [];
+                files[item] = {};
+                files[item]['file'] = [];
+                files[item]['strings'] = [];
                 fs.readdirSync('/var/log/' + item).forEach(file => {
                     console.log(file);
                     files[item]['file'].push(file);
