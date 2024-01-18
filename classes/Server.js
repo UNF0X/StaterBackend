@@ -160,7 +160,7 @@ export class Server{
                     .filter(item => !item.isDirectory())
                     .map(item => item.name)
                 filesList.forEach(file => {
-                    if (file.match('/(\.gz)|(\.xz)/ig')) {return;}
+                    if (file.match('/(\\.gz)|(\\.xz)/ig')) {return;}
                         files[item][file] = [];
                         var lineReader = readLine.createInterface({
                             input: fs.createReadStream('/var/log/' + item + '/' + file)
