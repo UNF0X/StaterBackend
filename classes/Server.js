@@ -156,14 +156,11 @@ export class Server{
             const files = {};
             dirs.map(item => {
                 files[item] = {};
-                files[item]['file'] = [];
-                files[item]['strings'] = [];
                 const filesList = fs.readdirSync('/var/log/' + item, {withFileTypes: true})
                     .filter(item => !item.isDirectory())
                     .map(item => item.name)
                 filesList.forEach(file => {
                     files[item][file] = [];
-                    try {
                        /* const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
                         files[item][file] = array.slice(-10);*/
 
@@ -184,9 +181,6 @@ export class Server{
                                 return;
                             }*/
                         });
-                    } catch (e) {
-                        console.log(e)
-                    }
                 });
             })
             res.send(JSON.stringify({
