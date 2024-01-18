@@ -162,7 +162,7 @@ export class Server{
                     .filter(item => !item.isDirectory())
                     .map(item => item.name)
                 filesList.forEach(file => {
-                    files[item]['file'][file] = [];
+                    files[item][file] = [];
                     try {
                        /* const array = fs.readFileSync('/var/log/' + item + '/' + file).toString().split("\n");
                         files[item][file] = array.slice(-10);*/
